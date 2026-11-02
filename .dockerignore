@@ -1,0 +1,7 @@
+.git
+bin/
+build/
+*.o
+*.log
+.env
+.DS_Store

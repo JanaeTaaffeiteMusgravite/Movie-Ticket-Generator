@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Binge Buddies - Movie Tickets</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎟️</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--curtain:#1f0a10;--velvet:#3a1220;--stage:#2a1119;--ivory:#f6ecd9;--mute:#b79ea5;--brass:#e0b04c;--ok:#7bd3a3;--bad:#ff8a7a;
+--serif:'Fraunces',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(120% 70% at 50% -10%,#4a1a2a,var(--curtain) 60%);min-height:100vh;color:var(--ivory);font:16px/1.5 var(--sans)}
+header{padding:28px 20px 8px;text-align:center}
+h1{font:800 clamp(2rem,7vw,3.4rem)/1 var(--serif);margin:0;letter-spacing:-.02em}
+header p{color:var(--mute);margin:6px 0 0}
+main{max-width:1000px;margin:0 auto;padding:16px 16px 56px}
+h2{font:600 1.6rem var(--serif);margin:20px 0 14px}
+h2 small{font:400 1rem var(--sans);color:var(--brass);margin-left:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+.card{background:var(--stage);border:1px solid #5a2536;border-radius:14px;overflow:hidden}
+.poster{height:150px;display:grid;place-items:center;font-size:3.6rem}
+.info{padding:14px 16px 16px}
+.info h3{font:600 1.25rem var(--serif);margin:0}
+.meta{color:var(--brass);font-size:.85rem;margin:2px 0 8px}
+.info p{margin:0 0 12px;color:#d9c8c9;font-size:.95rem}
+.times{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:transparent;color:var(--ivory);border:1px solid var(--brass);border-radius:8px;padding:6px 12px;cursor:pointer;font:600 .95rem var(--sans);display:grid;text-align:center}
+.chip small{font-weight:400;color:var(--mute);font-size:.72rem}
+.chip:hover:not(:disabled){background:var(--brass);color:#2a1100}.chip:hover small{color:#4b2a08}
+.chip:disabled{opacity:.4;cursor:not-allowed}
+button:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+.link{background:none;border:0;color:var(--mute);cursor:pointer;font:inherit;padding:4px 0}
+.split{display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start}
+@media(max-width:800px){.split{grid-template-columns:1fr}}
+.screen{height:34px;margin:6px auto 22px;max-width:520px;border-radius:50% 50% 0 0/100% 100% 0 0;background:linear-gradient(#f6ecd9aa,transparent);text-align:center;color:#2a1100;font-size:.75rem;line-height:34px;letter-spacing:.2em}
+.row{display:flex;align-items:center;justify-content:center;gap:clamp(3px,1vw,7px);margin-bottom:7px}
+.row b{width:18px;color:var(--mute);font-weight:600}
+.aisle{width:clamp(8px,3vw,22px)}
+.seat{width:clamp(22px,7vw,38px);height:clamp(24px,7vw,34px);border-radius:9px 9px 4px 4px;border:1px solid #6b3447;background:#4a1d2e;color:var(--mute);font:600 .7rem var(--sans);cursor:pointer;padding:0}
+.seat.vip{border-color:var(--brass);background:#4d2a22}
+.seat:hover:not(:disabled){background:#6e2c45}
+.seat.booked{background:#150a0e;border-color:#2a1a20;color:#4d3a40;cursor:not-allowed;text-decoration:line-through}
+.seat.sel{background:var(--ok);border-color:var(--ok);color:#06240f}
+.legend{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:18px;color:var(--mute);font-size:.85rem}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:4px 4px 2px 2px;vertical-align:-2px;margin-right:6px;border:1px solid #6b3447;background:#4a1d2e}
+.legend .v{border-color:var(--brass);background:#4d2a22}.legend .s{background:var(--ok);border-color:var(--ok)}.legend .b{background:#150a0e;border-color:#2a1a20}
+.summary{padding:18px;position:sticky;top:12px}
+.summary h3{font:600 1.2rem var(--serif);margin:0 0 10px}
+.line{display:flex;justify-content:space-between;color:#d9c8c9;padding:3px 0}
+.total{border-top:1px dashed #6b3447;margin-top:10px;padding-top:10px;font:700 1.3rem var(--serif);color:var(--ivory)}
+input{width:100%;margin-top:12px;padding:10px 12px;border-radius:8px;border:1px solid #6b3447;background:#150a0e;color:var(--ivory);font:inherit}
+.cta{width:100%;margin-top:12px;padding:12px;border:0;border-radius:10px;background:var(--brass);color:#2a1100;font:700 1rem var(--sans);cursor:pointer}
+.cta:disabled{opacity:.4;cursor:not-allowed}
+.msg{color:var(--bad);min-height:1.4em;margin:8px 0 0;font-size:.9rem}
+.empty{color:var(--mute);margin:4px 0}
+.ticket{max-width:420px;margin:24px auto;background:var(--ivory);color:#2a1100;border-radius:16px;position:relative;padding:24px}
+.ticket::before,.ticket::after{content:"";position:absolute;top:96px;width:26px;height:26px;border-radius:50%;background:var(--curtain)}
+.ticket::before{left:-13px}.ticket::after{right:-13px}
+.ticket h2{margin:0 0 4px;color:#2a1100}
+.ticket .id{font:800 1.6rem var(--serif);letter-spacing:.04em;border-bottom:2px dashed #b79e7a;padding:0 0 22px;margin:8px 0 18px}
+.ticket .line{color:#4b2a08}.ticket .total{color:#2a1100;border-color:#b79e7a}
+.ticket .cta{background:#2a1100;color:var(--ivory)}
+</style>
+</head>
+<body>
+<header><h1>Binge Buddies</h1><p>Pick a film, pick your seats, done.</p></header>
+<main id="app"><p class="empty">Loading movies…</p></main>
+<script>
+const API = new URLSearchParams(location.search).get('api') || '';
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const L = r => String.fromCharCode(65 + r);
+let movies = [], cur = null, show = null, info = null, sel = new Set(), name = '';
+
+async function api(path, opt) {
+  const r = await fetch(API + path, opt);
+  const d = await r.json().catch(() => ({ error: 'Unexpected server response' }));
+  if (!r.ok) throw new Error(d.error || 'Request failed');
+  return d;
+}
+
+async function home() {
+  try { movies = await api('/api/movies'); renderCatalog(); }
+  catch (e) { app.innerHTML = `<p class="msg">Can't reach the booking server. Start the backend and reload. (${esc(e.message)})</p>`; }
+}
+
+function renderCatalog() {
+  app.innerHTML = '<h2>Now showing</h2><div class="grid">' + movies.map(m => `
+    <article class="card">
+      <div class="poster" style="background:linear-gradient(145deg,${esc(m.c1)},${esc(m.c2)})">${m.emoji}</div>
+      <div class="info">
+        <h3>${esc(m.title)}</h3>
+        <p class="meta">${esc(m.genre)}, ${esc(m.duration)}, rated ${esc(m.rating)}</p>
+        <p>${esc(m.synopsis)}</p>
+        <div class="times">${m.shows.map(s => `<button class="chip" data-show="${s.id}" ${s.free ? '' : 'disabled'}>${s.time}<small>${s.free ? s.free + ' seats left' : 'sold out'}</small></button>`).join('')}</div>
+      </div>
+    </article>`).join('') + '</div>';
+}
+
+async function openShow(id) {
+  cur = movies.find(m => m.shows.some(s => s.id === id));
+  show = cur.shows.find(s => s.id === id);
+  sel.clear();
+  try { info = await api(`/api/shows/${id}/seats`); renderSeats(); }
+  catch (e) { alert(e.message); }
+}
+
+function renderSeats() {
+  const booked = new Set(info.booked);
+  let rows = '';
+  for (let r = 0; r < info.rows; r++) {
+    let h = `<div class="row"><b>${L(r)}</b>`;
+    for (let c = 1; c <= info.cols; c++) {
+      const id = L(r) + c, b = booked.has(id);
+      h += `<button class="seat ${r >= info.vip_from_row ? 'vip' : ''} ${b ? 'booked' : ''} ${sel.has(id) ? 'sel' : ''}" data-seat="${id}" ${b ? 'disabled' : ''} aria-label="Seat ${id}${b ? ', booked' : ''}">${c}</button>`;
+      if (c === info.cols / 2) h += '<i class="aisle"></i>';
+    }
+    rows += h + '</div>';
+  }
+  app.innerHTML = `<button class="link" id="back">← All movies</button>
+    <div class="split"><section>
+      <h2>${esc(cur.title)}<small>${show.time}</small></h2>
+      <div class="screen">SCREEN</div>${rows}
+      <div class="legend"><span><i></i>Regular $${info.prices.regular}</span><span><i class="v"></i>VIP $${info.prices.vip}</span><span><i class="s"></i>Selected</span><span><i class="b"></i>Booked</span></div>
+    </section><aside class="card summary" id="sum"></aside></div>`;
+  renderSummary();
+}
+
+function renderSummary(msg = '') {
+  const picked = [...sel].sort();
+  const vip = picked.filter(s => s.charCodeAt(0) - 65 >= info.vip_from_row).length, reg = picked.length - vip;
+  const total = vip * info.prices.vip + reg * info.prices.regular;
+  $('#sum').innerHTML = `<h3>Your booking</h3>
+    <div class="line"><span>${esc(cur.title)}</span><span>${show.time}</span></div>
+    ${picked.length ? `<div class="line"><span>Seats</span><span>${picked.join(', ')}</span></div>
+      ${reg ? `<div class="line"><span>${reg} × Regular</span><span>$${reg * info.prices.regular}</span></div>` : ''}
+      ${vip ? `<div class="line"><span>${vip} × VIP</span><span>$${vip * info.prices.vip}</span></div>` : ''}`
+      : '<p class="empty">Tap seats to select them (up to 8).</p>'}
+    <div class="line total"><span>Total</span><span>$${total}</span></div>
+    <input id="name" placeholder="Name for the booking" maxlength="40" value="${esc(name)}" aria-label="Name for the booking">
+    <button class="cta" id="book" ${picked.length ? '' : 'disabled'}>Book ${picked.length || ''} ${picked.length === 1 ? 'seat' : 'seats'}</button>
+    <p class="msg" role="alert">${esc(msg)}</p>`;
+}
+
+async function book() {
+  $('#book').disabled = true;
+  try {
+    renderReceipt(await api('/api/book', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ show_id: show.id, seats: [...sel], name: name.trim() }) }));
+  } catch (e) {
+    try { info = await api(`/api/shows/${show.id}/seats`); } catch (_) {}
+    const gone = new Set(info.booked);
+    sel = new Set([...sel].filter(s => !gone.has(s)));
+    renderSeats();
+    renderSummary(e.message + '. Your selection was refreshed.');
+  }
+}
+
+function renderReceipt(d) {
+  app.innerHTML = `<div class="ticket">
+    <h2>You're booked!</h2>
+    <div class="id">${esc(d.booking_id)}</div>
+    <div class="line"><span>Movie</span><span>${esc(d.movie)}</span></div>
+    <div class="line"><span>Showtime</span><span>${esc(d.time)}</span></div>
+    <div class="line"><span>Name</span><span>${esc(d.name)}</span></div>
+    <div class="line"><span>Seats</span><span>${d.seats.map(esc).join(', ')}</span></div>
+    <div class="line total"><span>Paid</span><span>$${d.total}</span></div>
+    <button class="cta" id="again">Book another film</button></div>`;
+}
+
+app.addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.show) openShow(+t.dataset.show);
+  else if (t.dataset.seat) {
+    const id = t.dataset.seat;
+    if (sel.has(id)) sel.delete(id);
+    else if (sel.size >= 8) return renderSummary('You can book up to 8 seats at a time.');
+    else sel.add(id);
+    t.classList.toggle('sel'); renderSummary();
+  }
+  else if (t.id === 'book') book();
+  else if (t.id === 'back' || t.id === 'again') home();
+});
+app.addEventListener('input', e => { if (e.target.id === 'name') name = e.target.value; });
+home();
+</script>
+</body>
+</html>

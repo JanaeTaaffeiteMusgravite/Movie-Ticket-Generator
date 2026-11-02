@@ -1,0 +1,17 @@
+# Compiled binaries and build output
+bin/
+build/
+*.o
+*.obj
+*.out
+*.exe
+*.dSYM/
+movie
+
+# Debug / temp files
+*.log
+*.tmp
+*.swp
+core
+.DS_Store
+.env
